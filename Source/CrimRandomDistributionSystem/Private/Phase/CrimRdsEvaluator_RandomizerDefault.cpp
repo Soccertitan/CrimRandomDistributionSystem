@@ -5,7 +5,7 @@
 
 #include "CrimRdsTypes.h"
 
-FCrimRdsTableRow UCrimRdsEvaluator_RandomizerDefault::SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams, const TArray<FCrimRdsTableRow>& SelectableRows)
+FCrimRdsTableRow UCrimRdsEvaluator_RandomizerDefault::SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& SelectableRows)
 {
 	FCrimRdsTableRow Result = Super::SelectRow(ExecutionParams, SelectableRows);
 

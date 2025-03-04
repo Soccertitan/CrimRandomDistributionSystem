@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CrimRdsEvaluatorBase.h"
 #include "UObject/Object.h"
 #include "CrimRdsEvaluator_RowSelected.generated.h"
 
@@ -13,7 +14,7 @@ struct FCrimRdsTableRow;
  * Called after the Evaluator has selected a Row.
  */
 UCLASS(ClassGroup = "CrimRds", BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced, Abstract)
-class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_RowSelected : public UObject
+class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_RowSelected : public UCrimRdsEvaluatorBase
 {
 	GENERATED_BODY()
 

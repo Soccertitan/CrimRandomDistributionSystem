@@ -15,5 +15,5 @@ class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_RandomizerDefault : pub
 	GENERATED_BODY()
 
 public:
-	virtual FCrimRdsTableRow SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams, const TArray<FCrimRdsTableRow>& SelectableRows) override;
+	virtual FCrimRdsTableRow SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& SelectableRows) override;
 };

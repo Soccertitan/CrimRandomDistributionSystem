@@ -25,18 +25,22 @@ struct CRIMRANDOMDISTRIBUTIONSYSTEM_API FCrimRdsCustomExecutionParams
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (RowType ="CrimRdsTableRow"))
 	FDataTableRowHandle RdsTableRowHandle;
 
+	/** If set to greater than 0, will use this value instead of the TableRowHandle's value for number of counts. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Count = 0;
+
 	/** Can contain custom information to pass along to the function. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UObject> Context;
 
 	/** The evaluator for the params. Will be set in the CrimRDSExecutionEvaluator. */
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UCrimRdsExecutionEvaluator> Evaluator; 
+	TObjectPtr<UCrimRdsExecutionEvaluator> Evaluator;
 };
 
 /**
  * A class that can take a FCrimDataTable row and return a list of CrimRDSEntries that were successfully hit by the
- * evaluator. This class is generic to handle all sorts of 'loot' tables.
+ * evaluator. This class is generic to handle all sorts of 'loot' table designs.
  */
 UCLASS(ClassGroup = "CrimRds", BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced)
 class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsExecutionEvaluator : public UObject

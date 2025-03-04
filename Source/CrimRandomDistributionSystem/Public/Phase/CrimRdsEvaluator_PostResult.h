@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CrimRdsEvaluatorBase.h"
 #include "UObject/Object.h"
 #include "CrimRdsEvaluator_PostResult.generated.h"
 
@@ -14,7 +15,7 @@ struct FCrimRdsTableRow;
  * the RDSTable's Result method exits.
  */
 UCLASS(ClassGroup = "CrimRds", BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced, Abstract)
-class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_PostResult : public UObject
+class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_PostResult : public UCrimRdsEvaluatorBase
 {
 	GENERATED_BODY()
 

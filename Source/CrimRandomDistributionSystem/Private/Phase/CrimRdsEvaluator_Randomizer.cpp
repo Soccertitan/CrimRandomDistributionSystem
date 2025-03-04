@@ -12,7 +12,7 @@ UCrimRdsEvaluator_Randomizer::UCrimRdsEvaluator_Randomizer()
 }
 
 FCrimRdsTableRow UCrimRdsEvaluator_Randomizer::SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams,
-		const TArray<FCrimRdsTableRow>& SelectableRows)
+		TArray<FCrimRdsTableRow>& SelectableRows)
 {
 	if (IsValid(ExecutionParams.Evaluator))
 	{

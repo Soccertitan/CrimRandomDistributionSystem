@@ -34,7 +34,18 @@ bool UCrimRdsExecutionEvaluator::Execute(FCrimRdsCustomExecutionParams& Executio
 	OutResult.Empty();
 	const UDataTable* RootTable = Table->DataAsset.LoadSynchronous();
 	ExecutionParams.Evaluator = this;
-	EvaluateTable(RootTable, Table->Count, ExecutionParams, OutResult);
+
+	int32 Count = 0;
+	if (ExecutionParams.Count > 0)
+	{
+		Count = ExecutionParams.Count;
+	}
+	else
+	{
+		Count = Table->Count;
+	}
+	
+	EvaluateTable(RootTable, Count, ExecutionParams, OutResult);
 
 	if (OutResult.Num() == 0)
 	{
@@ -79,10 +90,18 @@ void UCrimRdsExecutionEvaluator::EvaluateTable(const UDataTable* Table, int32 Co
 		{
 			if (Evaluator)
 			{
-				Evaluator->OnPreResultEvaluation(ExecutionParams, MutableRow);
+				Evaluator->OnPreResultRowEvaluation(ExecutionParams, MutableRow);
 			}
 		}
 		MutableRows.Add(MutableRow);
+	}
+
+	for (TObjectPtr<UCrimRdsEvaluator_PreResult>& Evaluator : PreResultEvaluators)
+	{
+		if (Evaluator)
+		{
+			Evaluator->OnPreResultTableEvaluation(ExecutionParams, MutableRows);
+		}
 	}
 
 	//----------------------------------------------------------------------------------------

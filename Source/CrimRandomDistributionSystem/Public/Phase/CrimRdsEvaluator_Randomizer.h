@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CrimRdsEvaluatorBase.h"
 #include "UObject/Object.h"
 #include "CrimRdsEvaluator_Randomizer.generated.h"
 
@@ -13,7 +14,7 @@ struct FCrimRdsTableRow;
  * The algorithm to use when selecting a row from a collection.
  */
 UCLASS(ClassGroup = "CrimRds", BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced, Abstract)
-class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_Randomizer : public UObject
+class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_Randomizer : public UCrimRdsEvaluatorBase
 {
 	GENERATED_BODY()
 
@@ -26,7 +27,7 @@ public:
 	 * @param SelectableRows The rows that can be selected.
 	 * @return A copy of the row that was chosen.
 	 */
-	virtual FCrimRdsTableRow SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams, const TArray<FCrimRdsTableRow>& SelectableRows);
+	virtual FCrimRdsTableRow SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& SelectableRows);
 
 protected:
 	
@@ -37,7 +38,7 @@ protected:
 	 * @return A copy of the row that was chosen.
 	 */
 	UFUNCTION(BlueprintImplementableEvent, DisplayName = "SelectRow")
-	FCrimRdsTableRow K2_SelectRow(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) const TArray<FCrimRdsTableRow>& SelectableRows);
+	FCrimRdsTableRow K2_SelectRow(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) TArray<FCrimRdsTableRow>& SelectableRows);
 
 private:
 

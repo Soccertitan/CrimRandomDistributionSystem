@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CrimRdsEvaluatorBase.h"
+#include "CrimRdsExecutionEvaluator.h"
 #include "UObject/Object.h"
 #include "CrimRdsEvaluator_PreResult.generated.h"
 
@@ -14,7 +16,7 @@ struct FCrimRdsTableRow;
  * This is the moment to modify any values before a result is calculated.
  */
 UCLASS(ClassGroup = "CrimRds", BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced, Abstract)
-class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_PreResult : public UObject
+class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_PreResult : public UCrimRdsEvaluatorBase
 {
 	GENERATED_BODY()
 
@@ -23,11 +25,19 @@ public:
 	UCrimRdsEvaluator_PreResult();
 
 	/**
-	 * Allows you to modify the values of the Row before any Rows are added to the result.
+	 * Allows you to modify the values of each Row before any Rows are added to the result.
 	 * @param ExecutionParams The context of the Evaluator.
 	 * @param Row The mutable row to update.
 	 */
-	virtual void OnPreResultEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsTableRow& Row);
+	virtual void OnPreResultRowEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsTableRow& Row);
+
+	/**
+	 * Called after all rows have been evaluated in OnPreResultRowEvaluation. Allows you to modify the Rows array and
+	 * other parameters before any rows are added to the result.
+	 * @param ExecutionParams The context of the Evaluator.
+	 * @param Rows The mutable array of rows.
+	 */
+	virtual void OnPreResultTableEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& Rows);
 
 protected:
 	
@@ -36,10 +46,20 @@ protected:
 	 * @param ExecutionParams The context of the Evaluator.
 	 * @param Row The mutable row to update.
 	 */
-	UFUNCTION(BlueprintImplementableEvent, DisplayName = "OnPreResultEvaluation")
-	void K2_OnPreResultEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) FCrimRdsTableRow& Row);
+	UFUNCTION(BlueprintImplementableEvent, DisplayName = "OnPreResultRowEvaluation")
+	void K2_OnPreResultRowEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) FCrimRdsTableRow& Row);
+
+	/**
+	 * Called after all rows have been evaluated in OnPreResultRowEvaluation. Allows you to modify the Rows array and
+	 * other parameters before any rows are added to the result.
+	 * @param ExecutionParams The context of the Evaluator.
+	 * @param Rows The mutable array of rows.
+	 */
+	UFUNCTION(BlueprintImplementableEvent, DisplayName = "OnPreResultTableEvaluation")
+	void K2_OnPreResultTableEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) TArray<FCrimRdsTableRow>& Rows);
 
 private:
 
-	uint8 bHasOnPreResultEvaluation : 1;
+	uint8 bHasOnPreResultRowEvaluation : 1;
+	uint8 bHasOnPreResultTableEvaluation : 1;
 };
