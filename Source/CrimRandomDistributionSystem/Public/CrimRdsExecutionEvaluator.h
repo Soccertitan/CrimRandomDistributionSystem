@@ -21,9 +21,9 @@ struct CRIMRANDOMDISTRIBUTIONSYSTEM_API FCrimRdsCustomExecutionParams
 {
 	GENERATED_BODY()
 
-	/** The Table and Row that contains a CrimRdsItem_Table item. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (RowType ="CrimRdsTableRow"))
-	FDataTableRowHandle RdsTableRowHandle;
+	/** The table to query. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (RequiredAssetDataTags = "RowStructure=/Script/CrimRandomDistributionSystem.CrimRdsTableRow"))
+	TObjectPtr<UDataTable> RdsTable;
 
 	/** If set to greater than 0, will use this value instead of the TableRowHandle's value for number of counts. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -60,7 +60,7 @@ public:
 	 * @return True if at least one result was returned.
 	 */
 	UFUNCTION(BlueprintCallable)
-	bool Execute(UPARAM(ref) FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& OutResult);
+	bool Execute(UPARAM(ref) FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& OutResult);
 
 protected:
 
@@ -94,7 +94,7 @@ private:
 	 * @param ExecutionParams Context of the Execution.
 	 * @param Result All the results that have been selected.
 	 */
-	void EvaluateTable(const UDataTable* Table, int32 Count, const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& Result);
+	void EvaluateTable(const UDataTable* Table, int32 Count, const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& Result);
 
 	/**
 	 * Adds the Row to the Result. If a CrimRdsItem_Row is the item in the passed in row. It will trigger EvaluateTable.
@@ -102,5 +102,5 @@ private:
 	 * @param ExecutionParams Context of the Execution.
 	 * @param Result All the results that have been selected.
 	 */
-	void AddToResult(FCrimRdsTableRow Row, const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& Result);
+	void AddToResult(FCrimRdsRow Row, const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& Result);
 };

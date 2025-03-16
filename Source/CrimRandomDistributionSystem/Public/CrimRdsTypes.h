@@ -39,18 +39,6 @@ struct CRIMRANDOMDISTRIBUTIONSYSTEM_API FCrimRdsItem_Table : public FCrimRdsItem
 };
 
 /**
- * A simple struct that just has a name.
- */
-USTRUCT(BlueprintType)
-struct CRIMRANDOMDISTRIBUTIONSYSTEM_API FCrimRdsItem_Name : public FCrimRdsItemBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Name = NAME_None;
-};
-
-/**
  * Contains a gameplay tag and value pair.
  */
 USTRUCT(BlueprintType)
@@ -115,17 +103,56 @@ struct FCrimRdsTableRow : public FTableRowBase
 	/** The actual item you want to return. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExcludeBaseStruct))
 	TInstancedStruct<FCrimRdsItemBase> Item;
+};
 
+/**
+ * The struct used in the CrimRdsExecutionEvaluator. Contains a copy of the data from an FCrimRdsTableRow.
+ * Includes extra information for query.
+ */
+USTRUCT(BlueprintType)
+struct CRIMRANDOMDISTRIBUTIONSYSTEM_API FCrimRdsRow
+{
+	GENERATED_BODY()
+
+	FCrimRdsRow(){}
+	FCrimRdsRow(FName InName, const FCrimRdsTableRow& TableRow);
+
+	/** The name of the row from the FCrimRdsTableRow */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Name = NAME_None;
+	/** The likelihood this entry will be selected. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0, UIMin = 0))
+	float Probability = 0.f;
+	/** This row can only be selected once in the result. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsUnique = false;
+	/** This row will always be part of the result set. Will only be selected once. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAlwaysPick = false;
+	/** Only enabled rows can be selected. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bEnabled = true;
+	/** Gameplay tags this row has. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTagContainer OwnedTags;
+	/** The actual item you want to return. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExcludeBaseStruct))
+	TInstancedStruct<FCrimRdsItemBase> Item;
+
+	FGuid GetId() const {return Id;}
+	
+private:
 	/** This Guid is used to identify equality between two structs. */
-	UPROPERTY(BlueprintReadOnly, meta = (DataTableImportOptional=true))
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
 	FGuid Id = FGuid();
 
-	friend bool operator==(const FCrimRdsTableRow& X, const FCrimRdsTableRow& Y)
+public:
+	friend bool operator==(const FCrimRdsRow& X, const FCrimRdsRow& Y)
 	{
 		return X.Id == Y.Id;
 	}
 
-	friend bool operator!=(const FCrimRdsTableRow& X, const FCrimRdsTableRow& Y)
+	friend bool operator!=(const FCrimRdsRow& X, const FCrimRdsRow& Y)
 	{
 		return X.Id != Y.Id;
 	}

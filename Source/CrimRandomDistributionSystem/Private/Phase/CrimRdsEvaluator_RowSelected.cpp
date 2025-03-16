@@ -11,7 +11,7 @@ UCrimRdsEvaluator_RowSelected::UCrimRdsEvaluator_RowSelected()
 	bHasOnRowSelected = BlueprintNodeHelpers::HasBlueprintFunction(TEXT("K2_OnRowSelected"), *this, *StaticClass());
 }
 
-void UCrimRdsEvaluator_RowSelected::OnRowSelected(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsTableRow& Row)
+void UCrimRdsEvaluator_RowSelected::OnRowSelected(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsRow& Row)
 {
 	if (IsValid(ExecutionParams.Evaluator))
 	{

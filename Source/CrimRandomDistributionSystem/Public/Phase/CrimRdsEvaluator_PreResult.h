@@ -9,7 +9,7 @@
 #include "CrimRdsEvaluator_PreResult.generated.h"
 
 struct FCrimRdsCustomExecutionParams;
-struct FCrimRdsTableRow;
+struct FCrimRdsRow;
 
 /**
  * Called in the evaluator before all the probabilities of all items of the current RDSTable are summed up together.
@@ -29,7 +29,7 @@ public:
 	 * @param ExecutionParams The context of the Evaluator.
 	 * @param Row The mutable row to update.
 	 */
-	virtual void OnPreResultRowEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsTableRow& Row);
+	virtual void OnPreResultRowEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsRow& Row);
 
 	/**
 	 * Called after all rows have been evaluated in OnPreResultRowEvaluation. Allows you to modify the Rows array and
@@ -37,7 +37,7 @@ public:
 	 * @param ExecutionParams The context of the Evaluator.
 	 * @param Rows The mutable array of rows.
 	 */
-	virtual void OnPreResultTableEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& Rows);
+	virtual void OnPreResultTableEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& Rows);
 
 protected:
 	
@@ -47,7 +47,7 @@ protected:
 	 * @param Row The mutable row to update.
 	 */
 	UFUNCTION(BlueprintImplementableEvent, DisplayName = "OnPreResultRowEvaluation")
-	void K2_OnPreResultRowEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) FCrimRdsTableRow& Row);
+	void K2_OnPreResultRowEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) FCrimRdsRow& Row);
 
 	/**
 	 * Called after all rows have been evaluated in OnPreResultRowEvaluation. Allows you to modify the Rows array and
@@ -56,7 +56,7 @@ protected:
 	 * @param Rows The mutable array of rows.
 	 */
 	UFUNCTION(BlueprintImplementableEvent, DisplayName = "OnPreResultTableEvaluation")
-	void K2_OnPreResultTableEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) TArray<FCrimRdsTableRow>& Rows);
+	void K2_OnPreResultTableEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) TArray<FCrimRdsRow>& Rows);
 
 private:
 

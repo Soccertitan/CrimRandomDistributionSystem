@@ -8,7 +8,7 @@
 #include "CrimRdsEvaluator_PostResult.generated.h"
 
 struct FCrimRdsCustomExecutionParams;
-struct FCrimRdsTableRow;
+struct FCrimRdsRow;
 
 /**
  * Occurs after the result has been calculated and the result set is complete, but before
@@ -28,7 +28,7 @@ public:
 	 * @param ExecutionParams The context of the Evaluator.
 	 * @param Result A collection of all the rows that were selected.
 	 */
-	virtual void OnPostResultEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& Result);
+	virtual void OnPostResultEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& Result);
 
 protected:
 	
@@ -38,7 +38,7 @@ protected:
 	 * @param Result A collection of all the rows that were selected.
 	 */
 	UFUNCTION(BlueprintImplementableEvent, DisplayName = "OnPostResultEvaluation")
-	void K2_OnPostResultEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) TArray<FCrimRdsTableRow>& Result);
+	void K2_OnPostResultEvaluation(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) TArray<FCrimRdsRow>& Result);
 
 private:
 

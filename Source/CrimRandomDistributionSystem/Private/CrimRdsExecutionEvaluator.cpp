@@ -15,37 +15,18 @@ UCrimRdsExecutionEvaluator::UCrimRdsExecutionEvaluator()
 	Randomizer = CreateDefaultSubobject<UCrimRdsEvaluator_RandomizerDefault>("RandomizerCountUp");
 }
 
-bool UCrimRdsExecutionEvaluator::Execute(FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& OutResult)
+bool UCrimRdsExecutionEvaluator::Execute(FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& OutResult)
 {
-	const FCrimRdsTableRow* Row = ExecutionParams.RdsTableRowHandle.GetRow<FCrimRdsTableRow>(FString());
-	if (!IsValid(ExecutionParams.RdsTableRowHandle.DataTable) ||
-		!ExecutionParams.RdsTableRowHandle.DataTable->GetRowStruct()->IsChildOf(FCrimRdsTableRow::StaticStruct()) ||
-		!Row)
-	{
-		return false;
-	}
-	
-	const FCrimRdsItem_Table* Table = Row->Item.GetPtr<FCrimRdsItem_Table>();
-	if (!Table)
+	if (!IsValid(ExecutionParams.RdsTable) ||
+		!ExecutionParams.RdsTable->GetRowStruct()->IsChildOf(FCrimRdsTableRow::StaticStruct()))
 	{
 		return false;
 	}
 
 	OutResult.Empty();
-	const UDataTable* RootTable = Table->DataAsset.LoadSynchronous();
 	ExecutionParams.Evaluator = this;
-
-	int32 Count = 0;
-	if (ExecutionParams.Count > 0)
-	{
-		Count = ExecutionParams.Count;
-	}
-	else
-	{
-		Count = Table->Count;
-	}
 	
-	EvaluateTable(RootTable, Count, ExecutionParams, OutResult);
+	EvaluateTable(ExecutionParams.RdsTable, ExecutionParams.Count, ExecutionParams, OutResult);
 
 	if (OutResult.Num() == 0)
 	{
@@ -64,27 +45,17 @@ bool UCrimRdsExecutionEvaluator::Execute(FCrimRdsCustomExecutionParams& Executio
 }
 
 void UCrimRdsExecutionEvaluator::EvaluateTable(const UDataTable* Table, int32 Count, const FCrimRdsCustomExecutionParams& ExecutionParams,
-	TArray<FCrimRdsTableRow>& Result)
+	TArray<FCrimRdsRow>& Result)
 {
-	TArray<FCrimRdsTableRow*> Rows;
-	Table->GetAllRows<FCrimRdsTableRow>(FString(), Rows);
-	if (Rows.Num() == 0)
-	{
-		return;
-	}
-	
 	//----------------------------------------------------------------------------------------
-	// 1. Make a mutable copy of the rows from the Table. And assigns a Guid to determine
-	// equality between rows. We do this here because the DataTable can't be trusted to have
-	// unique Ids.
+	// 1. Make a mutable copy of the rows from the Table.
 	// Then run the PreResultEvaluator's to give designers a chance to modify the Row's value
 	// before running the randomizer.
 	//----------------------------------------------------------------------------------------
-	TArray<FCrimRdsTableRow> MutableRows;
-	for (const auto& Row : Rows)
+	TArray<FCrimRdsRow> MutableRows;
+	for (const auto& It : Table->GetRowMap())
 	{
-		FCrimRdsTableRow MutableRow = *Row;
-		MutableRow.Id = FGuid::NewGuid();
+		FCrimRdsRow MutableRow = FCrimRdsRow(It.Key, *(FCrimRdsTableRow*)It.Value);
 
 		for (TObjectPtr<UCrimRdsEvaluator_PreResult>& Evaluator : PreResultEvaluators)
 		{
@@ -94,6 +65,11 @@ void UCrimRdsExecutionEvaluator::EvaluateTable(const UDataTable* Table, int32 Co
 			}
 		}
 		MutableRows.Add(MutableRow);
+	}
+	
+	if (MutableRows.Num() == 0)
+	{
+		return;
 	}
 
 	for (TObjectPtr<UCrimRdsEvaluator_PreResult>& Evaluator : PreResultEvaluators)
@@ -109,13 +85,18 @@ void UCrimRdsExecutionEvaluator::EvaluateTable(const UDataTable* Table, int32 Co
 	// Also add the other enabled rows to a SelectableRows array. This will get passed to the
 	// randomizer for processing.
 	//----------------------------------------------------------------------------------------
-	TArray<FCrimRdsTableRow> SelectableRows;
-	for (FCrimRdsTableRow& Row : MutableRows)
+	TArray<FCrimRdsRow> SelectableRows;
+	for (FCrimRdsRow& Row : MutableRows)
 	{
 		if (Row.bAlwaysPick && Row.bEnabled)
 		{
 			Count--;
 			AddToResult(Row, ExecutionParams, Result);
+
+			if (!Row.bIsUnique)
+			{
+				SelectableRows.Add(Row);
+			}
 		}
 		else if (Row.bEnabled)
 		{
@@ -133,20 +114,20 @@ void UCrimRdsExecutionEvaluator::EvaluateTable(const UDataTable* Table, int32 Co
 	{
 		for (int32 CurrentCount = 0; CurrentCount < Count; CurrentCount++)
 		{
-			FCrimRdsTableRow SelectedRow = Randomizer->SelectRow(ExecutionParams, SelectableRows);
+			FCrimRdsRow SelectedRow = Randomizer->SelectRow(ExecutionParams, SelectableRows);
 
 			if (SelectedRow.bIsUnique)
 			{
-				SelectableRows.Remove(SelectedRow);	
+				SelectableRows.Remove(SelectedRow);
 			}
 			AddToResult(SelectedRow, ExecutionParams, Result);
 		}
 	}
 }
 
-void UCrimRdsExecutionEvaluator::AddToResult(FCrimRdsTableRow Row, const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& Result)
+void UCrimRdsExecutionEvaluator::AddToResult(FCrimRdsRow Row, const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& Result)
 {
-	// Must have a valid Row Item to be added.
+	// Must have a valid Row Item to be added to the result.
 	if (Row.Item.GetPtr<FCrimRdsItemBase>())
 	{
 		for (auto& Evaluator : RowSelectedEvaluators)

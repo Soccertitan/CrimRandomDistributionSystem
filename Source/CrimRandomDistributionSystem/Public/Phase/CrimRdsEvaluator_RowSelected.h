@@ -7,8 +7,8 @@
 #include "UObject/Object.h"
 #include "CrimRdsEvaluator_RowSelected.generated.h"
 
+struct FCrimRdsRow;
 struct FCrimRdsCustomExecutionParams;
-struct FCrimRdsTableRow;
 
 /**
  * Called after the Evaluator has selected a Row.
@@ -26,7 +26,7 @@ public:
 	 * @param ExecutionParams The context of the Evaluator.
 	 * @param Row The selected row.
 	 */
-	virtual void OnRowSelected(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsTableRow& Row);
+	virtual void OnRowSelected(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsRow& Row);
 
 protected:
 	
@@ -36,7 +36,7 @@ protected:
 	 * @param Row The selected row.
 	 */
 	UFUNCTION(BlueprintImplementableEvent, DisplayName = "OnRowSelected")
-	void K2_OnRowSelected(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) FCrimRdsTableRow& Row);
+	void K2_OnRowSelected(UPARAM(ref) const FCrimRdsCustomExecutionParams& ExecutionParams, UPARAM(ref) FCrimRdsRow& Row);
 	
 private:
 

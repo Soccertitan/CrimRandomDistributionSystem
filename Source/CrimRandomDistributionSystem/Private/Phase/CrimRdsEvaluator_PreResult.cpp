@@ -12,7 +12,7 @@ UCrimRdsEvaluator_PreResult::UCrimRdsEvaluator_PreResult()
 	bHasOnPreResultTableEvaluation = BlueprintNodeHelpers::HasBlueprintFunction(TEXT("K2_OnPreResultTableEvaluation"), *this, *StaticClass());
 }
 
-void UCrimRdsEvaluator_PreResult::OnPreResultRowEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsTableRow& Row)
+void UCrimRdsEvaluator_PreResult::OnPreResultRowEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, FCrimRdsRow& Row)
 {
 	if (IsValid(ExecutionParams.Evaluator))
 	{
@@ -23,7 +23,7 @@ void UCrimRdsEvaluator_PreResult::OnPreResultRowEvaluation(const FCrimRdsCustomE
 	}
 }
 
-void UCrimRdsEvaluator_PreResult::OnPreResultTableEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& Rows)
+void UCrimRdsEvaluator_PreResult::OnPreResultTableEvaluation(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& Rows)
 {
 	if (IsValid(ExecutionParams.Evaluator))
 	{

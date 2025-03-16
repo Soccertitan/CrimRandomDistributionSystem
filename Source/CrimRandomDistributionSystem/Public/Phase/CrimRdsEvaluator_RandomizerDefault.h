@@ -6,6 +6,8 @@
 #include "CrimRdsEvaluator_Randomizer.h"
 #include "CrimRdsEvaluator_RandomizerDefault.generated.h"
 
+struct FCrimRdsRow;
+
 /**
  * 
  */
@@ -15,5 +17,5 @@ class CRIMRANDOMDISTRIBUTIONSYSTEM_API UCrimRdsEvaluator_RandomizerDefault : pub
 	GENERATED_BODY()
 
 public:
-	virtual FCrimRdsTableRow SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsTableRow>& SelectableRows) override;
+	virtual FCrimRdsRow SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams, TArray<FCrimRdsRow>& SelectableRows) override;
 };

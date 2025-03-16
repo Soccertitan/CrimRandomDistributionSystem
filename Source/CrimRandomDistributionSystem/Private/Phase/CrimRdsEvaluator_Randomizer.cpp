@@ -11,8 +11,8 @@ UCrimRdsEvaluator_Randomizer::UCrimRdsEvaluator_Randomizer()
 	bHasSelectRow = BlueprintNodeHelpers::HasBlueprintFunction(TEXT("K2_SelectRow"), *this, *StaticClass());
 }
 
-FCrimRdsTableRow UCrimRdsEvaluator_Randomizer::SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams,
-		TArray<FCrimRdsTableRow>& SelectableRows)
+FCrimRdsRow UCrimRdsEvaluator_Randomizer::SelectRow(const FCrimRdsCustomExecutionParams& ExecutionParams,
+		TArray<FCrimRdsRow>& SelectableRows)
 {
 	if (IsValid(ExecutionParams.Evaluator))
 	{
@@ -21,5 +21,5 @@ FCrimRdsTableRow UCrimRdsEvaluator_Randomizer::SelectRow(const FCrimRdsCustomExe
 			return K2_SelectRow(ExecutionParams, SelectableRows);
 		}
 	}
-	return FCrimRdsTableRow();
+	return FCrimRdsRow();
 }
