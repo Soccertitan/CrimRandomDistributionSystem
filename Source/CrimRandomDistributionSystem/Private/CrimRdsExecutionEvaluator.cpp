@@ -4,6 +4,7 @@
 #include "CrimRdsExecutionEvaluator.h"
 
 #include "CrimRdsTypes.h"
+#include "Engine/AssetManager.h"
 #include "Phase/CrimRdsEvaluator_RowSelected.h"
 #include "Phase/CrimRdsEvaluator_PostResult.h"
 #include "Phase/CrimRdsEvaluator_PreResult.h"
@@ -140,7 +141,11 @@ void UCrimRdsExecutionEvaluator::AddToResult(FCrimRdsRow Row, const FCrimRdsCust
 		
 		if (const FCrimRdsItem_Table* Table = Row.Item.GetPtr<FCrimRdsItem_Table>())
 		{
-			EvaluateTable(Table->DataAsset.LoadSynchronous(), Table->Count, ExecutionParams, Result);
+			if (!Table->DataAsset.Get())
+			{
+				UAssetManager::Get().LoadAssetList({Table->DataAsset.ToSoftObjectPath()})->WaitUntilComplete();
+			}
+			EvaluateTable(Table->DataAsset.Get(), Table->Count, ExecutionParams, Result);
 		}
 		else
 		{
